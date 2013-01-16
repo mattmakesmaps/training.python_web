@@ -30,9 +30,12 @@ while 1:
     # Keep connection alive.
     while 1:
         data = conn.recv(4096)
-        listIn = literal_eval(data)
-        print 'Values: %s, Type: %s' % (listIn, type(listIn))
-        conn.sendall('Sum: %s\n' % sum(listIn))
+        if data:
+            listIn = literal_eval(data)
+            print 'Values: %s, Type: %s' % (listIn, type(listIn))
+            conn.sendall('Sum: %s\n' % sum(listIn))
+        else:
+            pass
 
 conn.close()
 server_socket.close()

@@ -14,7 +14,7 @@ except socket.error, msg:
     sys.exit()
 
 # Send a list of numbers
-listIn = [0,1,2,3]
+listIn = [7,1,2,3]
 client_socket.sendall(str(listIn))
 response = client_socket.recv(4096)
 print response
