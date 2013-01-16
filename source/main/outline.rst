@@ -100,6 +100,8 @@ computers.
 The class assignment will be to extend the simple web server, adding the
 ability to run dynamic processes and return the results to the client.
 
+`Week 2 Presentation <presentations/week02.html>`_
+
 Reading
 *******
 
@@ -174,11 +176,17 @@ at data the original author may not have considered valuable enough to present
 as consumable.
 
 We'll explore the use of tools like BeautifulSoup to help make sense of the
-truly horrible HTML that can be found in the wild. We will also look at "Web
+truly horrible HTML that is to be found in the wild. We will also look at "Web
 Services" formats like XMLRPC and REST so we can understand the ways in which
-we can find data, or present it ourselves.  Finally, we'll look at some "Web
+we can find data, or present it ourselves. Finally, we'll look at some "Web
 Service APIs" to help understand how to read them, and how to use them to get
 at the data they provide.
+
+In our class lab sessions we will practice scraping a website and using a
+documented web service API.
+
+For our class assignment, students will choose two sources of information
+online and combine them in a mashup.
 
 Reading
 *******
@@ -193,7 +201,7 @@ Reading
 * `A Brief Introduction to REST (Tilkov 2007)
   <http://www.infoq.com/articles/rest-introduction>`_
 * `Why HATEOAS - *a simple case study on the often ignored REST constraint*
-  <http://www.slideshare.net/trilancer/why-hateoas-1547275#btnPrevious>`_
+  <http://www.slideshare.net/trilancer/why-hateoas-1547275>`_
 
 References
 **********
@@ -208,7 +216,7 @@ Python Standard Libraries:
   <http://docs.python.org/release/2.6.5/library/docxmlrpcserver.html>`_
 * `json <http://docs.python.org/release/2.6.5/library/json.html>`_
 
-External Eibraries:
+External Libraries:
 +++++++++++++++++++
 
 * BeautifulSoup_ - "You didn't write that awful page. You're just trying to
