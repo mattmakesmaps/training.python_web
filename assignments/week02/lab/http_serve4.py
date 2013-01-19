@@ -81,7 +81,7 @@ s.bind( (host,port) )
 s.listen(backlog)
 html = open('./tiny_html.html','r').read()
 
-#response = ok_response(html)
+#response = make_response(html)
 
 while True: # keep looking for new connections forever
     try:

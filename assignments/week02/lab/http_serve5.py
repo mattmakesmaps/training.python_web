@@ -24,13 +24,12 @@ from email.utils import formatdate
 from os import path, listdir
 import socket, re
 
-def ok_response(body, content_type='text/plain'):
+def make_response(body, status_code='200 OK', content_type='text/plain'):
     """Return a formatted HTTP Response."""
-    header = 'HTTP/1.0 200 OK\r\nContent-Type: %s\r\n' % content_type
+    header = 'HTTP/1.0 %s\r\nContent-Type: %s\r\n' % (status_code, content_type)
     # Add Date Header
     header += 'Date: %s\r\n\r\n' % formatdate()
-    file = open(body,'r').read()
-    response = header + file
+    response = header + body
     return response
 
 def resolve_uri(inuri):
@@ -43,7 +42,6 @@ def resolve_uri(inuri):
     # Check for path
     if path.isdir(joined_path):
         print 'this is a directory'
-        header = 'HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n'
         # Get Contents of Directory
         dir_contents = listdir(joined_path)
         # Create a string representing links for all files/dirs
@@ -51,7 +49,7 @@ def resolve_uri(inuri):
         for resource in dir_contents:
             resource_links += '<a href=./%s>%s</a><br/>'%(path.join(inuri, resource), resource)
         # Return header and response
-        response = header + resource_links
+        response = make_response(resource_links,'200 OK','text/html')
         return response
     elif path.isfile(joined_path):
         print 'this is a file'
@@ -61,23 +59,15 @@ def resolve_uri(inuri):
         content_type_listing = {'.html':'text/html', '.txt':'text/plain',
                                 '.png':'image/png', '.jpg':'image/jpeg',
                                 '.jpeg': 'image/jpeg'}
-        # Pass appropriate content/type value and file to ok_response
+        # Pass appropriate content/type value and file to make_response
         if ext[1] in content_type_listing.iterkeys():
             content_type = content_type_listing[ext[1]]
-            response = ok_response(joined_path,content_type)
+            file = open(joined_path, 'r').read()
+            response = make_response(file,'200 OK', content_type)
             return response
     else:
-        header = 'HTTP/1.0 404 Not Found\r\nContent-Type: text/plain\r\n\r\n'
-        body = 'ERROR: File not found.'
-        response = header + body
+        response = make_response('ERROR: File Not Found','404 Not Found')
         return response
-
-
-def client_error_response(body):
-    """Return a formatted HTTP Response."""
-    header = 'HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/plain\r\n\r\n'
-    response = header + body
-    return response
 
 def parse_request(request):
     """Return the URI from the header"""
@@ -88,7 +78,9 @@ def parse_request(request):
     if uriHeader[0] == 'GET' and 'HTTP' in uriHeader[2]:
         return uriHeader[1]
     else:
-        raise ValueError
+        response_body = 'ERROR: Bad Request. Please send an HTTP GET Request.'
+        response = make_response(response_body,'400 Bad Request')
+        return response
 
 host = '' # listen on all connections (WiFi, etc) 
 port = 50030
@@ -120,5 +112,7 @@ while True: # keep looking for new connections forever
             print "received: %s, sending it back"%data
             client.send(resolved_response)
             client.close()
-    except ValueError:
-        client_error_response('Bad Request, we only take GETs from HTTP.')
+    except Exception:
+        # Not too sure what to do here
+        # Need some generic error handling code, maybe a 5XX error?
+        pass
