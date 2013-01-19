@@ -1,0 +1,33 @@
+Matt Kenny Week 02 Notes
+========================
+
+# Objective
+
+  * Create a basic HTTP Server.
+
+# Workflow
+
+  * For URL resolution, I relied on the various methods provided by os.path.
+    Specificially, os.path.isfile(), os.path.isdir(), and os.path.join()
+  * I tried to generalize the ok_response function to accept user provided
+    keyword arguments for a status code and content type. This allowed me to
+    reuse the function for all of my responses.
+
+# Questions
+
+  * In some of the original steps, I wrapped the server mainloop in a try/except
+    block, specifically handling ValueErrors. I made this more general, and decided
+    that this would be a good place to return a 500 error to the user, as I believe
+    an exception would be raised only in the event that something went wrong on the
+    server side.
+
+    For all other types of 'exceptions' whether they be unhandled HTTP verbs, files
+    not being found, etc... I relied on returning relevant HTTP Status codes and
+    error messages back to the user, without raising an exception in the script.
+    Is this a correct way of doing things? Or should I be relying on python exception
+    handlers to facilite that process of sending appropriate error messages back to
+    the user?
+
+  * My resolve_uri function seems to have grown in size as I write code to handle
+    different URLs. I'm wondering if I should split out any of this functionality
+    into seperate functions?

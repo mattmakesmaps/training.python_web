@@ -86,7 +86,7 @@ def resolve_uri(inuri):
         # need a dict of extensions as keys, content type string as values.
         content_type_listing = {'.html':'text/html', '.txt':'text/plain',
                                 '.png':'image/png', '.jpg':'image/jpeg',
-                                '.jpeg': 'image/jpeg'}
+                                '.jpeg': 'image/jpeg', '.mkd':'text/plain'}
         # Pass appropriate content/type value and file to make_response
         if ext[1] in content_type_listing.iterkeys():
             content_type = content_type_listing[ext[1]]
