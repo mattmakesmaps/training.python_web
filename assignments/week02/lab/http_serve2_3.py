@@ -10,7 +10,7 @@ def ok_response(body):
 
 def client_error_response(body):
     """Return a formatted HTTP Response."""
-    header = 'HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\n'
+    header = 'HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/plain\r\n\r\n'
     response = header + body
     return response
 
@@ -55,4 +55,6 @@ while True: # keep looking for new connections forever
             client.send(response)
             client.close()
     except ValueError:
-        client_error_response('Bad Request, we only take GETs from HTTP.')
+        response = client_error_response('Bad Request, we only take GETs from HTTP.')
+        client.send(response)
+        client.close()
