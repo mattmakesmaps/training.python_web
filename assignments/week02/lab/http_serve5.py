@@ -44,22 +44,27 @@ def resolve_uri(inuri):
         return header
     elif os.path.isfile(joined_path):
         print 'this is a file'
+        # Get file extension
         ext = os.path.splitext(joined_path)
         # need a dict of extensions as keys, content type string as values.
-        content_type_listing = {'.html':'text/html', '.txt':'text/plain'}
+        content_type_listing = {'.html':'text/html', '.txt':'text/plain',
+                                '.png':'image/png', '.jpg':'image/jpeg',
+                                '.jpeg': 'image/jpeg'}
+        # Pass appropriate content/type value and file to ok_response
         if ext[1] in content_type_listing.iterkeys():
             content_type = content_type_listing[ext[1]]
             response = ok_response(joined_path,content_type)
             return response
     else:
-        header = 'HTTP/1.0 404 Not Found\r\nContent-Type: text/html\r\n\r\n'
-        print 'not found error'
-        return header
+        header = 'HTTP/1.0 404 Not Found\r\nContent-Type: text/plain\r\n\r\n'
+        body = 'ERROR: File not found.'
+        response = header + body
+        return response
 
 
 def client_error_response(body):
     """Return a formatted HTTP Response."""
-    header = 'HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\n'
+    header = 'HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/plain\r\n\r\n'
     response = header + body
     return response
 
