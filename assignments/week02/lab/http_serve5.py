@@ -21,7 +21,7 @@ Serve different types of files:
 You've now got a reasonably functional HTTP web server.  Congratulations!
 """
 from email.utils import formatdate
-from os import path
+from os import path, listdir
 import socket, re
 
 def ok_response(body, content_type='text/plain'):
@@ -44,7 +44,15 @@ def resolve_uri(inuri):
     if path.isdir(joined_path):
         print 'this is a directory'
         header = 'HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n'
-        return header
+        # Get Contents of Directory
+        dir_contents = listdir(joined_path)
+        # Create a string representing links for all files/dirs
+        resource_links = ''
+        for resource in dir_contents:
+            resource_links += '<a href=./%s>%s</a><br/>'%(path.join(inuri, resource), resource)
+        # Return header and response
+        response = header + resource_links
+        return response
     elif path.isfile(joined_path):
         print 'this is a file'
         # Get file extension
