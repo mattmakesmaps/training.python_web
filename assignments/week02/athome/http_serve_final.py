@@ -5,7 +5,7 @@ Lab Time - Step 5
 
 Serve different types of files:
 
-* Save the file as ``http_serve5.py``
+* Save the file as ``http_serve_final.py``
 
 * Update the ``resolve_uri`` method. If the URI names a file, return it as the
   body of a ``200 OK`` response.
