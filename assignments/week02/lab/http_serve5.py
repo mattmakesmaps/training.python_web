@@ -20,12 +20,15 @@ Serve different types of files:
 
 You've now got a reasonably functional HTTP web server.  Congratulations!
 """
-
-import socket, re, os
+from email.utils import formatdate
+from os import path
+import socket, re
 
 def ok_response(body, content_type='text/plain'):
     """Return a formatted HTTP Response."""
-    header = 'HTTP/1.0 200 OK\r\nContent-Type: %s\r\n\r\n' % content_type
+    header = 'HTTP/1.0 200 OK\r\nContent-Type: %s\r\n' % content_type
+    # Add Date Header
+    header += 'Date: %s\r\n\r\n' % formatdate()
     file = open(body,'r').read()
     response = header + file
     return response
@@ -36,16 +39,16 @@ def resolve_uri(inuri):
     if inuri[0] == '/':
         inuri = inuri[1:]
     # associate request with web folder.
-    joined_path = os.path.join('./web',inuri)
+    joined_path = path.join('./web',inuri)
     # Check for path
-    if os.path.isdir(joined_path):
+    if path.isdir(joined_path):
         print 'this is a directory'
         header = 'HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n'
         return header
-    elif os.path.isfile(joined_path):
+    elif path.isfile(joined_path):
         print 'this is a file'
         # Get file extension
-        ext = os.path.splitext(joined_path)
+        ext = path.splitext(joined_path)
         # need a dict of extensions as keys, content type string as values.
         content_type_listing = {'.html':'text/html', '.txt':'text/plain',
                                 '.png':'image/png', '.jpg':'image/jpeg',
@@ -92,9 +95,6 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # the bind makes it a server
 s.bind( (host,port) )
 s.listen(backlog)
-html = open('./tiny_html.html','r').read()
-
-#response = ok_response(html)
 
 while True: # keep looking for new connections forever
     try:
@@ -102,14 +102,15 @@ while True: # keep looking for new connections forever
         data = client.recv(size)
         # Parse data
         getURI = parse_request(data)
-        resolved_response_header = resolve_uri(getURI)
+        resolved_response = resolve_uri(getURI)
         print "Get URI %s" % getURI
         # Create a list of headers as tuples. Got this from SO.
-        headers = re.findall(r"(?P<name>.*?): (?P<value>.*?)\r\n", data)
+        # Might be useful to know user-agent value. e.g. mobile formatted?
+#        headers = re.findall(r"(?P<name>.*?): (?P<value>.*?)\r\n", data)
 
         if data: # if the connection was closed there would be no data
             print "received: %s, sending it back"%data
-            client.send(resolved_response_header)
+            client.send(resolved_response)
             client.close()
     except ValueError:
         client_error_response('Bad Request, we only take GETs from HTTP.')
