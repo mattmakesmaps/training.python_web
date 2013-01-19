@@ -4,6 +4,7 @@ Matt Kenny Week 02 Notes
 # Objective
 
   * Create a basic HTTP Server.
+  * View online at http://block647055-hm6.blueboxgrid.com:50000
 
 # Workflow
 
