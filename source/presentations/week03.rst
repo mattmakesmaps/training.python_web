@@ -128,7 +128,9 @@ First Steps - Get Source
 ------------------------
 
 Let's start by grabbing the page we want. We use the Python Standard Library
-``urllib2`` to handle this task (note that we've shortened the URL)::
+``urllib2`` to handle this task (note that we've shortened the URL):
+
+.. code-block:: python
 
     >>> import urllib2
     >>> page = urllib2.urlopen('http://tinyurl.com/osfeeds')
@@ -145,12 +147,14 @@ First Steps - Read Source
 -------------------------
 
 We can take the page we just opened, and read it. The object is file-like, so
-it supports standard file read operations::
+it supports standard file read operations:
+
+.. code-block:: python
 
     >>> html = page.read()
-    >>> len(page)
+    >>> len(html)
     373447
-    >>> print page
+    >>> print html
 
     <!DOCTYPE html PUBLIC
       "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -178,7 +182,7 @@ Brief Interlude
 
 .. class:: big-centered
 
-"Some people, when confronted with a problem, think 'I know, I'ʹll use regular
+"Some people, when confronted with a problem, think 'I know, I'll use regular
 expressions.' Now they have two problems."
 
 Even Better
@@ -207,7 +211,9 @@ Step Back for a Moment
 ----------------------
 
 This is going to take some preparation, so let's set aside our html page in a
-way that will allow us to come back to it::
+way that will allow us to come back to it:
+
+.. code-block:: python
 
     >>> fh = open('bloglist.html', 'w')
     >>> fh.write(html)
@@ -259,9 +265,9 @@ Creating a new virtualenv is very very simple::
 <ENV> is just the name of the environment you want to create. It's arbitrary.
 Let's make one for our BeautifulSoup install::
 
-    $ python virtualanv.py --distribute soupenv
-    New python executable in fooenv/bin/python2.6
-    Also creating executable in fooenv/bin/python
+    $ python virtualenv.py --distribute soupenv
+    New python executable in soupenv/bin/python2.6
+    Also creating executable in soupenv/bin/python
     Installing distribute........................
     .............................................
     ...done.
@@ -274,7 +280,7 @@ When you ran that file, a couple of things took place:
 .. class:: incremental
 
 * A new directory with your requested name was created
-* A new Python executable was created in <ENV>/bin
+* A new Python executable was created in <ENV>/bin (<ENV>/Scripts on Windows)
 * The new Python was cloned from the Python used to run the file
 * The new Python was isolated from any libraries installed in the old Python
 * Distribute (a newer, better setuptools) was installed so you have ``easy_install``
@@ -345,7 +351,9 @@ Parsing HTML
 ------------
 
 Okay, we're all set here. Let's load up our HTML page and get ready to scrape
-it::
+it:
+
+.. code-block:: python
 
     (soupenv)$ python
     >>> fh = open('bloglist.html', 'r')
@@ -404,7 +412,9 @@ Searching by CSS Class
 ----------------------
 
 The items we are looking for are ``div`` tags which have the CSS class
-``feedEntry``::
+``feedEntry``:
+
+.. code-block:: python
 
     >>> entries = parsed.find_all('div', class_='feedEntry')
     >>> len(entries)
@@ -433,22 +443,24 @@ What bits of an entry have the details we need to meet our goals?
 Testing it out
 --------------
 
-::
+.. code-block:: python
 
-    >>> for e in entries:
-    ...     anchor = e.find('a')
-    ...     paragraph = e.find('p', 'discreet')
-    ...     title = anchor.text.strip()
-    ...     url = anchor.attrs['href']
-    ...     print title
-    ...     print url
-    ...     try:
-    ...         print paragraph.text.strip()
-    ...     except AttributeError:
-    ...         print 'Uncategorized'
-    ...     print
-    ...     
-    >>>
+    for e in entries:
+        anchor = e.find('a')
+        paragraph = e.find('p', 'discreet')
+        title = anchor.text.strip()
+        url = anchor.attrs['href']
+        print title
+        print url
+        try:
+            print paragraph.text.strip()
+        except AttributeError:
+            print 'Uncategorized'
+        print
+
+.. class:: incremental
+
+Watch for unicode encoding errors, I don't get any, but you might.
 
 Lab 1 - 20 mins
 ---------------
@@ -466,6 +478,18 @@ Lab 1 - 20 mins
 .. class:: incremental center
 
 **GO**
+
+Short Break
+-----------
+
+While you are taking a short break, you might take a moment to sign up for 
+the geocoding service we'll use later:
+
+http://geoservices.tamu.edu/UserServices/Signup.aspx
+
+You can also view your profile once you've signed up:
+
+http://geoservices.tamu.edu/UserServices/Profile/ViewProfile.aspx
 
 Another Approach
 ----------------
@@ -565,7 +589,7 @@ we also allow *calling procedures* at an endpoint?
 
 .. class:: incremental
 
-We can!  Enter XML-RPC
+We can!  Enter XML-RPC (Remote Procedure Call)
 
 .. class:: incremental
 
@@ -582,9 +606,8 @@ XML-RPC Example - Server
 
 xmlrpc_server.py:
 
-.. class:: small
-
-::
+.. code-block:: python
+    :class: small
 
     from SimpleXMLRPCServer import SimpleXMLRPCServer
     
@@ -610,9 +633,8 @@ xmlrpc_server.py script:
 
 Then, open another terminal and start up python:
 
-.. class:: small
-
-::
+.. code-block:: python
+    :class: small
 
     >>> import xmlrpclib
     >>> proxy = xmlrpclib.ServerProxy('http://localhost:50000', verbose=True)
@@ -680,11 +702,10 @@ Register an entire Python class as a service, exposing class methods::
 
     server.register_instance(MyClass())
 
-Keep an instance method private:
+Keep an instance method private    :
 
-.. class:: tiny
-
-::
+.. code-block:: python
+    :class: tiny
 
     class MyServiceClass(object):
         ...
@@ -702,9 +723,8 @@ XML-RPC Introspection
 
 First, implement required methods on your service class:
 
-.. class:: tiny
-
-::
+.. code-block:: python
+    :class: tiny
 
     from SimpleXMLRPCServer import list_public_methods
     
@@ -724,23 +744,21 @@ First, implement required methods on your service class:
             f = getattr(self, method)
             return f.__doc__
 
-XML-RPC Instrospection
-----------------------
+XML-RPC Introspection
+---------------------
 
 Then enable introspection via the server instance:
 
-.. class:: small
-
-::
+.. code-block:: python
+    :class: small
 
     server.register_introspection_functions()
 
 After this, a client proxy can call pre-defined methods to learn about what
-your service offers
+your service offers:
 
-.. class:: small
-
-::
+.. code-block:: python
+    :class: small
 
     >>> for name in proxy.system.listMethods():
     ...     help = proxy.system.methodHelp(name)
@@ -750,6 +768,26 @@ your service offers
     public_method
         this method is public
 
+Introspection Question
+----------------------
+
+I told you when we added the ``_private_method`` that any method that any
+method whose name starts with ``_`` would be **private**.
+
+.. class:: incremental
+
+But we also added a ``_listMethods`` method and a ``_methodHelp`` method and
+*those* methods are listed when you run ``proxy.system.listMethods()``
+
+.. class:: incremental
+
+Why is this?
+
+.. class:: incremental
+
+For a complete discussion of this, read `this MOTW post`_
+
+.. _this MOTW post: http://www.doughellmann.com/PyMOTW/SimpleXMLRPCServer/index.html#introspection-api
 
 Beyond XML-RPC
 --------------
@@ -814,9 +852,8 @@ Suds allows us to create a SOAP client object. SOAP uses WSDL to define a
 service. All we need to do to set this up in python is load the URL of the
 WSDL for the service we want to use:
 
-.. class:: small
-
-::
+.. code-block:: python
+    :class: small
 
     (soupenv)$ python
     >>> from suds.client import Client
@@ -830,9 +867,8 @@ Peeking at the Service
 Suds allows us to visually scan the service. Simply print the client object to
 see what the service has to offer:
 
-.. class:: small
-
-::
+.. code-block:: python
+    :class: small
 
     >>> print geo_client
 
@@ -853,7 +889,9 @@ Debugging Suds
 
 Suds uses python logging to deal with debug information, so if you want to see
 what's going on under the hood, you configure it via the Python logging
-module::
+module:
+
+.. code-block:: python
 
     >>> import logging
     >>> logging.basicConfig(level=logging.INFO)
@@ -870,13 +908,17 @@ SOAP Servers can provide more than one *service* and each *service* might have
 more than one *port*. Suds provides two ways to configure which *service* and
 *port* you wish to use.  
 
-Via subscription::
+Via subscription:
+
+.. code-block:: python
 
     client.service['<service>']['<port>'].method(args)
 
-Or the way we will do it, via configuration::
+Or the way we will do it, via configuration:
 
-    geo_client.set_options(service='GeocoderService_V03_01', ↩
+.. code-block:: python
+
+    geo_client.set_options(service='GeocoderService_V03_01',
                            port='GeocoderService_V03_01Soap')
 
 Providing Arguments
@@ -885,21 +927,20 @@ Providing Arguments
 Arguments to a method are set up as a dictionary.  Although some may not be 
 required according to api documentation, it is safest to provide them all:
 
-.. class:: small
+.. code-block:: python
+    :class: small
 
-::
-
-    >>> apiKey = '<fill this in>'
-    >>> args = {'apiKey': apiKey, }
-    >>> args['streetAddress'] = '1325 4th Avenue'
-    >>> args['city'] = 'Seattle'
-    >>> args['state'] = 'WA'
-    >>> args['zip'] = '98101'
-    >>> args['version'] = 3.01
-    >>> args['shouldReturnReferenceGeometry'] = True
-    >>> args['shouldNotStoreTransactionDetails'] = True
-    >>> args['shouldCalculateCensus'] = False
-    >>> args['censusYear'] = "TwoThousandTen"
+    apiKey = '<fill this in>'
+    args = {'apiKey': apiKey, }
+    args['streetAddress'] = '1325 4th Avenue'
+    args['city'] = 'Seattle'
+    args['state'] = 'WA'
+    args['zip'] = '98101'
+    args['version'] = 3.01
+    args['shouldReturnReferenceGeometry'] = True
+    args['shouldNotStoreTransactionDetails'] = True
+    args['shouldCalculateCensus'] = False
+    args['censusYear'] = "TwoThousandTen"
 
 Making the Call
 ---------------
@@ -907,9 +948,8 @@ Making the Call
 Finally, once we've got the arguments all ready we can go ahead and make a call
 to the server:
 
-.. class:: small
-
-::
+.. code-block:: python
+    :class: small
 
     >>> res = geo_client.service.GeocodeAddressNonParsed(**args)
     DEBUG:suds.client:sending to 
@@ -980,7 +1020,9 @@ And What of Our Result?
 The WSDL we started with should provide type definitions for both data we send
 and results we receive. The ``res`` symbol we bound to our result earlier
 should now be an instance of a *GeocodeAddressNonParsedResult*. Lets see what
-that looks like::
+that looks like:
+
+.. code-block:: python
 
     >>> type(res)
     <type 'instance'>
@@ -1008,11 +1050,10 @@ A Word on Debugging
 
 .. class:: incremental
 
-Try this
+Try this:
 
-.. class:: small incremental
-
-::
+.. code-block:: python
+    :class: small incremental
 
     >>> geo_client.last_sent().str().replace(" ","")[:573]
     '...</ns0:version>\n<ns0:shouldCalculateCensus/>'
@@ -1067,11 +1108,11 @@ pythonic, no?
 JSON Data Types
 ---------------
 
-JSON provides a few basic data types:
+JSON provides a few basic data types (see http://json.org/):
 
 .. class:: incremental
 
-* string: unicode, anything but '"', '\' and control chars
+* string: unicode, anything but ", \\ and control characters
 * number: any number, but json does not use octal or hexidecimal
 * object, array (we've seen these above)
 * true
@@ -1089,9 +1130,8 @@ Dates in JSON
 
 Option 1 - Unix Epoch Time (number):
 
-.. class:: incremental small
-
-::
+.. code-block:: python
+    :class: small incremental
 
     >>> import time
     >>> time.time()
@@ -1099,9 +1139,10 @@ Option 1 - Unix Epoch Time (number):
 
 .. class:: incremental
 
-Option 2 - ISO 8661 (string)
+Option 2 - ISO 8661 (string):
 
-.. class:: incremental small
+.. code-block:: python
+    :class: small incremental
 
     >>> import datetime
     >>> datetime.datetime.now().isoformat()
@@ -1112,19 +1153,18 @@ JSON in Python
 
 You can encode python to json, and decode json back to python:
 
-.. class:: small
-
-::
+.. code-block:: python
+    :class: small
 
     >>> import json
     >>> array = [1,2,3]
     >>> json.dumps(array)
-    >>> dict_ = {'foo': [1,2,3], 'bar': u'my resumé', 'baz': True}
-    >>> json.dumps(dict_)
+    >>> orig = {'foo': [1,2,3], 'bar': u'my resumé', 'baz': True}
+    >>> encoded = json.dumps(orig)
+    >>> encoded
     '{"baz": true, "foo": [1, 2, 3], "bar": "my resum\\u00e9"}'
-    >>> incoming = _
-    >>> new = json.loads(incoming)
-    >>> new == dict_
+    >>> decoded = json.loads(encoded)
+    >>> decoded == orig
     True
 
 .. class:: incremental
@@ -1326,7 +1366,8 @@ Geocoding with Google APIs
 
 https://developers.google.com/maps/documentation/geocoding
 
-.. class:: small incremental
+.. code-block:: python
+    :class: small incremental
 
     >>> import urllib
     >>> import urllib2
@@ -1344,7 +1385,8 @@ RESTful Job Listings
 
 https://github.com/mattnull/techsavvyapi
 
-.. class:: small incremental
+.. code-block:: python
+    :class: small incremental
 
     >>> base = 'http://api.techsavvy.io/jobs'
     >>> search = 'python+web'
@@ -1394,17 +1436,17 @@ pull request:
 
 .. class:: small
 
-A textual description of your mashup.
+A textual description of your mashup (README.txt).
   What data sources did you scan, what tools did you use, what is the
   outcome you wanted to create?
 
 .. class:: small
 
-Your source code.
+Your source code (mashup.py).
   Give me an executable python script that I can run to get output.
 
 .. class:: small
 
 Any instructions I need.
-  If I need instructions beyond 'python myscript.py' to get the right
+  If I need instructions beyond 'python mashup.py' to get the right
   output, let me know.
