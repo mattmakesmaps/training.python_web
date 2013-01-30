@@ -22,12 +22,105 @@ But First
 
 Review from the Assignment
 
+Save Memory on Loading
+----------------------
+
+When you are loading data from an API, you can sometimes get more than you
+bargained for. Both BeautifulSoup and the json library provide ways to help:
+
+.. code-block:: python
+    :class: incremental
+
+    page = urllib2.urlopen(url)
+    json_string = page.read()
+    json.loads(json_string)
+
+.. code-block:: python
+    :class: incremental
+
+    page = urllib2.urlopen(url)
+    json.loads(page)
+
+.. class:: incremental
+
+The second form will *buffer* the input as it is read, and minimize memory
+consumption. If you've got really large data sets this can be very good.
+
+Protect Yourself From the Net
+-----------------------------
+
+We learned in our last class that APIs can flake. Remember that. It's *vital*!
+
+.. code-block:: python
+    :class: incremental
+
+    page = urllib2.urlopen(url)
+    parsed = BeautifulSoup(page)
+
+.. code-block:: python
+    :class: incremental
+
+    page = urllib2.urlopen(url)
+    if page.code == 200:
+        parsed = BeautifulSoup(page)
+    else:
+        raise SomeExceptionYouCanCatch
+
+.. class:: incremental
+
+What happens if your desired API is offline when a user comes to see your
+page? Make sure you give yourself a way to be kind to your users. 500 Internal
+Server Errors suck!
+
+What You Made
+-------------
+
+.. class:: incremental
+
+* geographic locations of our Bluebox VMs
+* Visualization of the popularity of Facebook Friends' first names
+* Restaurants near your location with recent Health Inspection data
+* A Last-FM user's top artists, with lists of mixcloud mixes featuring each of
+  them
+* A list of Craigslist apartments with the nearest bars, pizza and sushi
+  places and their Yelp ratings
+* Geographic locations of the top 20 users returned for a twitter search,
+  along with other twitter data
+
+A Note on Homeworks
+-------------------
+
+.. class:: incremental
+
+* I've been saying that only attendance counts for your grade.
+* It was brought to my attention this week that my own syllabus says
+  differently
+* The work we've done so far is all, in some sense, foundational. We will be
+  using tools starting next week that build upon the tools we've encountered.
+
+.. class:: incremental
+
+Homework from this point out should be considered required. We are now
+reaching the level of tools you will use on a day to day basis. Mastery comes
+with practice.
+
 And Second
 ----------
 
 .. class:: big-centered
 
 Questions from the Reading?
+
+And Third
+---------
+
+Open ``assignments/week04/lab/type-along.txt``
+
+.. class:: incremental
+
+This contains all the code examples from today's lecture. It's meant to help
+you with keeping up when we are moving quickly through sample slides. I hope
+it is of some use.
 
 And Now...
 ----------
@@ -209,6 +302,7 @@ You have a couple of options:
 
 * Python Standard Library CGIHTTPServer
 * Apache
+* IIS (on Windows)
 * Some other HTTP server that implements CGI (lighttpd, ...?)
 
 .. class:: incremental
@@ -218,6 +312,19 @@ Let's start locally by using the Python module
 .. class:: incremental
 
 Again, Windows folks, this is going to be most easily done on your VM
+
+Running CGI - Preparations
+--------------------------
+
+If you are running this on your VM (*Windows users, this means **you***) and
+you **do not already have the class repo on your vm**, here's the steps to get
+it::
+
+    $ cd
+    $ mkdir git
+    $ cd git
+    $ git clone https://github.com/cewing/training.python_web.git
+    $ cd training.python_web
 
 Running CGI - First Test
 ------------------------
@@ -229,7 +336,8 @@ Make sure you have the latest source of the class documentation, then:
 * Open *two* terminal windows and in both, ``cd`` to the
   ``assignments/week04/lab`` directory
 * In the first terminal, run ``python -m CGIHTTPServer``
-* Open a web browser and load ``http://localhost:8000/``
+* Open a web browser and load ``http://localhost:8000/`` 
+* (if you're running on your VM, you'll open http://<YOUR_BLUEBOX_VM>.blueboxgrid.com:8000/)
 * Click on *CGI Test 1*
 
 Did that work?
@@ -241,6 +349,11 @@ Did that work?
   ``cgi_1.py``
 * The file must be executable, the directory needs to be readable *and*
   executable.
+
+
+.. class:: incremental
+
+Remember that you can use the bash ``chmod`` command to change permissions
 
 Break It
 --------
@@ -264,7 +377,8 @@ Reload your web browser and see what happens.
 
 .. class:: incremental
 
-Put the permissions back to how they were before.
+| Put the permissions back to how they were before:
+| $ chmod 755 cgi-bin/cgi_1.py
 
 Break It Differently
 --------------------
@@ -275,6 +389,7 @@ the script?  What happens there?
 .. class:: incremental
 
 * Open ``assignments/week04/lab/cgi-bin/cgi_1.py`` in an editor
+* if you're on your VM, use ``nano cgi-bin/cgi_1.py`` (ctrl-o, <enter> to save, ctrl-x to exit)
 * Before where it says ``cgi.test()``, add a single line:
 
 .. code-block:: python
@@ -378,14 +493,21 @@ processes are run:
 More Permission Fun
 -------------------
 
-Let's interfere with this::
+Let's interfere with this:
 
-    $ ls -l /usr/bin/python
-    -rwxr-xr-x  2 root  wheel ... /usr/bin/python
-    $ sudo chmod 750 /usr/bin/python
-    Password: 
-    $ ls -l /usr/bin/python
-    -rwxr-x---  2 root  wheel ... /usr/bin/python
+.. class:: small
+
+::
+
+    $ ls -l /usr/bin/python*
+    lrwxrwxrwx 1 root root       9 Oct  4 18:48 python -> python2.6
+    lrwxrwxrwx 1 root root       9 Oct  4 18:48 python2 -> python2.6
+    -rwxr-xr-x 1 root root 2288240 Apr 16  2010 python2.6
+    $ sudo chmod 750 python
+    $ ls -l /usr/bin/python*
+    lrwxrwxrwx 1 root root       9 Oct  4 18:48 python -> python2.6
+    lrwxrwxrwx 1 root root       9 Oct  4 18:48 python2 -> python2.6
+    -rwxr-x--- 1 root root 2288240 Apr 16  2010 python2.6
 
 .. class:: incremental
 
@@ -395,12 +517,17 @@ tools.
 Enough of That
 --------------
 
-Okay, put the permissions back on your system python::
+Okay, put the permissions back on your system python:
+
+.. class:: small
+
+::
 
     $ sudo chmod 755 /usr/bin/python
-    Password: 
-    $ ls -l /usr/bin/python
-    -rwxr-xr-x  2 root  wheel ... /usr/bin/python
+    $ ls -l /usr/bin/python*
+    lrwxrwxrwx 1 root root       9 Oct  4 18:48 python -> python2.6
+    lrwxrwxrwx 1 root root       9 Oct  4 18:48 python2 -> python2.6
+    -rwxr-xr-x 1 root root 2288240 Apr 16  2010 python2.6
 
 The CGI Environment
 -------------------
@@ -423,13 +550,13 @@ Where do they come from?
 CGI Servers
 -----------
 
-Let's find 'em.  In a terminal fire up python:
+Let's find 'em.  In a terminal (on your local machine, please) fire up python:
 
 .. code-block::
 
     >>> import CGIHTTPServer
     >>> CGIHTTPServer.__file__
-    '/System/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/CGIHTTPServer.py'
+    '/big/giant/path/to/lib/python2.6/CGIHTTPServer.py'
 
 .. class:: incremental
 
@@ -475,6 +602,11 @@ browser?
 
 A CGI Script must print it's results to stdout.
 
+.. class:: incremental
+
+As a corollary to this, the ``test`` method of the cgi module has this line:
+``sys.stderr = sys.stdout``. Why?
+
 Recap:
 ------
 
@@ -504,7 +636,7 @@ Lab 1
 You've seen the output from the ``cgi.test()`` method from the ``cgi`` module.
 Let's make our own version of this.
 
-.. class:: incremental
+.. class:: incremental small
 
 * In ``assignments/week04/lab/src`` you will find the file
   ``lab1_cgi_template.py``.
@@ -513,6 +645,7 @@ Let's make our own version of this.
 * The script contains some html with text naming elements of the CGI
   environment.
 * Use elements of os.environ to fill in the blanks.
+* view your work in a browser at localhost:8000 *or* <yourvm>.blueboxgrid.com:8000
 
 .. class:: incremental center
 
@@ -732,6 +865,7 @@ To get our script to run, we have to put it in the ``cgi-bin`` directory.
 * It is **not** world-writable
 * You'll need to put it somewhere you can write without using ``sudo``
 * Put it in your home directory
+* If you are already working on your VM, you can skip this part.
 
 .. class:: incremental
 
@@ -854,7 +988,7 @@ A WSGI Appliction must:
 * Be a callable (function, method, class) 
 * Take an environment and a ``start_response`` callable as arguments
 * Return an iterable of 0 or more strings, which are treated as the body of
-  the respponse.
+  the response.
 
 Flowcharts
 ----------
@@ -1275,6 +1409,11 @@ Open the file /etc/apache2/sites-available/default in a text editor:
     $ cd /etc/apache2
     $ vi sites-available/default
 
+.. class:: incremental
+
+You can also use ``nano`` or ``pico`` or ``joe`` or whatever simple text
+editor you like.
+
 Adding WSGIScriptAlias
 ----------------------
 
@@ -1343,6 +1482,10 @@ Okay, our syntax is good, no problems there.  Let's restart:
     $ sudo /etc/init.d/apache2 graceful
     * Reloading web server config apache2           [ OK ]
 
+.. class:: incremental
+
+Hit http://YOUR_VM.blueboxgrid.com/wsgi-bin/wsgi_test.py with your browser.
+
 Looking at wsgi_test.py
 -----------------------
 
@@ -1388,7 +1531,8 @@ Let's repeat what we did for CGI with WSGI:
 * The script contains some html with text naming elements of the WSGI
   environment.
 * Use elements of ``environ`` to fill in the blanks.
-* You can test and debug changes locally by running the script (``python lab2_wsgi_template.py``)
+* You can test and debug changes *locally* by running the script (``python
+  lab2_wsgi.py``) and then pointing your browser to ``localhost:8080``
 
 .. class:: incremental center
 

@@ -3,7 +3,7 @@ import datetime
 
 body = """<html>
 <head>
-<title>Lab 2 - WSGI experiments</title>
+<title>Lab A - CGI experiments</title>
 </head>
 <body>
 
@@ -23,12 +23,12 @@ The request arrived at %s<br>
 def application(environ, start_response):
     response_body = body % (
          environ.get('SERVER_NAME', 'Unset'), # server name
-         'aaaa', # server IP
-         'bbbb', # server port
-         'cccc', # client IP
-         'dddd', # client port
-         'eeee', # this script name
-         'ffff', # time
+         environ.get('SERVER_ADDR', 'Unset'), # server IP
+         environ.get('SERVER_PORT', 'Unset'), # server port
+         environ.get('REMOTE_ADDR', 'Unset'), # client IP
+         environ.get('REMOTE_PORT', 'Unset'), # client port
+         environ.get('SCRIPT_NAME', 'Unset'), # this script name
+         datetime.datetime.now().isoformat(), # time
          )
     status = '200 OK'
 

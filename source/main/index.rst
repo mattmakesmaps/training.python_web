@@ -15,6 +15,7 @@ Internet Programming with Python
 
        self
        outline
+       assignments
 
 Winter Term, 2013 - (10 Sessions)
 
@@ -55,9 +56,10 @@ Minutiae
 
 :Assessment:
 
-    The course is graded Pass/Fail, based on satisfactory completion of
-    required programming assignments and classroom presentations. Attendance
-    is required; more than two unexcused absences will result in a Fail.
+    The course is graded Pass/Fail, based on **satisfactory completion of
+    required programming assignments** and classroom presentations.
+    **Attendance is required**; more than two unexcused absences will result
+    in a Fail.
 
 
 :Accommodation:
