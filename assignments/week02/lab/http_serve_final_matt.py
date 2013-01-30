@@ -5,7 +5,7 @@ Lab Time - Step 5
 
 Serve different types of files:
 
-* Save the file as ``http_serve_final.py``
+* Save the file as ``http_serve_final_matt.py``
 
 * Update the ``resolve_uri`` method. If the URI names a file, return it as the
   body of a ``200 OK`` response.
@@ -65,7 +65,6 @@ def resolve_uri(inuri):
     if inuri == 'time-page':
         body = make_time()
         response = make_response(body,content_type='text/html')
-        return response
     # Directory
     elif path.isdir(joined_path):
         print 'this is a directory'
@@ -77,7 +76,6 @@ def resolve_uri(inuri):
             resource_links += '<a href=./%s>%s</a><br/>'%(path.join(inuri, resource), resource)
         # Return header and response
         response = make_response(resource_links,'200 OK','text/html')
-        return response
     # File
     elif path.isfile(joined_path):
         print 'this is a file'
@@ -92,11 +90,11 @@ def resolve_uri(inuri):
             content_type = content_type_listing[ext[1]]
             file = open(joined_path, 'r').read()
             response = make_response(file,'200 OK', content_type)
-            return response
     # Not Found.
     else:
         response = make_response('ERROR: File Not Found','404 Not Found')
-        return response
+#        return response
+    return response
 
 def parse_request(request):
     """Return the URI from the header"""
