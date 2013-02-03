@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import cgi
-
+import cgi, cgitb
+cgitb.enable()
 
 cgi.test()
