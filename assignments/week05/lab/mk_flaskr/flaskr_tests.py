@@ -128,5 +128,16 @@ class FlaskerTestCase(unittest.TestCase):
         assert 'Invalid Login' in rv.data
         rv = self.login('admin', 'defaultx')
         assert 'Invalid Login' in rv.data
+
+    def test_add_entries(self):
+        self.login('admin', 'default')
+        rv = self.client.post('/add', data=dict(
+            title='Hello',
+            text='This is a post'
+        ), follow_redirects=True)
+        assert 'No entries here so far' not in rv.data
+        assert 'Hello' in rv.data
+        assert 'This is a post' in rv.data
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, g, render_template, session, flash, request, redirect, url_for
+from flask import Flask, g, render_template, session, flash, request, redirect, url_for, abort
 from contextlib import closing
 
 
@@ -99,5 +99,15 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('show_entries'))
 
+@app.route('/add', methods=['POST'])
+def add_entry():
+    if not session.get('logged_in'):
+        abort(401)
+    try:
+        write_entry(request.form['title'], request.form['text'])
+        flash('New entry was successfully posted')
+    except sqlite3.Error as e:
+        flash('There was an error: %s' % e.args[0])
+    return redirect(url_for('show_entries'))
 if __name__ == '__main__':
     app.run(debug=True)
