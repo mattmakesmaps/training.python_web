@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, g
+from flask import Flask, g, render_template
 from contextlib import closing
 
 
@@ -52,6 +52,15 @@ def get_all_entries():
     cur = g.db.execute('select title, text from entries order by id desc')
     entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
     return entries
+
+@app.route('/')  # This is the first function with an app route decorator. Pointed to '/'
+def show_entries():
+    """
+    Grab all entries from the database and render to a template.
+    This feels most similar to a typical django view function.
+    """
+    entries = get_all_entries()
+    return render_template('show_entries.html', entries=entries)
 
 if __name__ == '__main__':
     app.run(debug=True)

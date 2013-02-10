@@ -31,6 +31,8 @@ class FlaskerTestCase(unittest.TestCase):
         rows = cur.fetchall()
         self.assertEquals(len(rows), 3)
 
+
+    # WRITE METHOD FUNCTIONALITY
     def test_write_entry(self):
         """
         Test the write_entry() method of flaskr.
@@ -49,6 +51,8 @@ class FlaskerTestCase(unittest.TestCase):
             # Actually check the values against expected.
             self.assertTrue(val in rows[0])
 
+
+    # READ METHOD FUNCTIONALITY
     def test_get_all_entries_empty(self):
         with self.app.test_request_context('/'):
             self.app.preprocess_request()
@@ -65,5 +69,21 @@ class FlaskerTestCase(unittest.TestCase):
             for entry in entries:
                 self.assertEquals(expected[0], entry['title'])
                 self.assertEquals(expected[1], entry['text'])
+
+    # Template Tests
+    # As opposed to read tests above, now we're actually testing the response values
+    # recieved by the client.
+    def test_empty_listing(self):
+        rv = self.client.get('/')
+        assert 'No entries here so far' in rv.data
+
+    def test_listing(self):
+        expected = ("My Title", "My Text")
+        with self.app.test_request_context('/'):
+            self.app.preprocess_request()
+            flaskr.write_entry(*expected)
+        rv = self.client.get('/')
+        for value in expected:
+            assert value in rv.data
 if __name__ == '__main__':
     unittest.main()
