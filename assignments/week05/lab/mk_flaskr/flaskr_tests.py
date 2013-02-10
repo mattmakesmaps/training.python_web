@@ -85,5 +85,48 @@ class FlaskerTestCase(unittest.TestCase):
         rv = self.client.get('/')
         for value in expected:
             assert value in rv.data
+
+
+    # Authentication Tests
+    def test_login_passes(self):
+        with self.app.test_request_context('/'):
+            self.app.preprocess_request()
+            flaskr.do_login(flaskr.app.config['USERNAME'],
+                            flaskr.app.config['PASSWORD'])
+            # Need to explicitly direct to flaskr session.
+            self.assertTrue(flaskr.session.get('logged_in', False))
+
+    def test_login_fails(self):
+        with self.app.test_request_context('/'):
+            self.app.preprocess_request()
+            self.assertRaises(ValueError, flaskr.do_login,
+                              flaskr.app.config['USERNAME'],
+                              'incorrectpassword')
+
+    # Login/Logout
+    # These methods are required to fake a login during the test_login_logout execution.
+    def login(self, username, password):
+        return self.client.post('/login', data=dict(
+            username=username,
+            password=password
+        ), follow_redirects=True)
+
+    def logout(self):
+        return self.client.get('/logout',
+                               follow_redirects=True)
+
+    def test_login_logout(self):
+        """
+        Test different types of login possibilities.
+        e.g. Valid, logged out, wrong user, wrong pass.
+        """
+        rv = self.login('admin', 'default')
+        assert 'You were logged in' in rv.data
+        rv = self.logout()
+        assert 'You were logged out' in rv.data
+        rv = self.login('adminx', 'default')
+        assert 'Invalid Login' in rv.data
+        rv = self.login('admin', 'defaultx')
+        assert 'Invalid Login' in rv.data
 if __name__ == '__main__':
     unittest.main()
