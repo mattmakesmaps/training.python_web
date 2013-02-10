@@ -1,11 +1,14 @@
 import sqlite3
-from flask import Flask, g, render_template
+from flask import Flask, g, render_template, session, flash, request, redirect, url_for
 from contextlib import closing
 
 
 # configuration goes here
 DATABASE = '/tmp/flaskr.db'
 SECRET_KEY = 'development_key'
+# admin auth stuff
+USERNAME = 'admin'
+PASSWORD = 'default'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -61,6 +64,40 @@ def show_entries():
     """
     entries = get_all_entries()
     return render_template('show_entries.html', entries=entries)
+
+def do_login(usr, pwd):
+    """
+    Check input values against the hard-coded config vals representing user/pass.
+    """
+    if usr != app.config['USERNAME']:
+        raise ValueError
+    elif pwd != app.config['PASSWORD']:
+        raise ValueError
+    else:
+        session['logged_in'] = True
+
+# Login Logout Functionality.
+# Note still using do_login() to check against config values for user/pass.
+# TODO: Review flash method.
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        try:
+            do_login(request.form['username'],
+                     request.form['password'])
+        except ValueError:
+            error = "Invalid Login"
+        else:
+            flash('You were logged in')
+            return redirect(url_for('show_entries'))
+    return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('show_entries'))
 
 if __name__ == '__main__':
     app.run(debug=True)
