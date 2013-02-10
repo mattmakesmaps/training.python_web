@@ -28,5 +28,19 @@ class FlaskerTestCase(unittest.TestCase):
         rows = cur.fetchall()
         self.assertEquals(len(rows), 3)
 
+    def test_write_entry(self):
+        expected = ("My Title", "My Text")
+        with self.app.test_request_context('/'):
+            self.app.preprocess_request()
+            # Insert our test data into the test database.
+            flaskr.write_entry(*expected)
+            con = flaskr.connect_db()
+            # Check for presence of test data.
+            cur = con.execute("select * from entries;")
+            rows = cur.fetchall()
+        self.assertEquals(len(rows), 1)
+        for val in expected:
+            # Actually check the values against expected.
+            self.assertTrue(val in rows[0])
 if __name__ == '__main__':
     unittest.main()
