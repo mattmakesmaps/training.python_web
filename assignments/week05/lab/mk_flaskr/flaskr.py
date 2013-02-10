@@ -44,5 +44,14 @@ def write_entry(title, text):
                  [title, text])
     g.db.commit()
 
+def get_all_entries():
+    """
+    Execute a SQL statement retrieve values from our single table.
+    Returns a list of dictionaries with titles as keys and text as values.
+    """
+    cur = g.db.execute('select title, text from entries order by id desc')
+    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
+    return entries
+
 if __name__ == '__main__':
     app.run(debug=True)

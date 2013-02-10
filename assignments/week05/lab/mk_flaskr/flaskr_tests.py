@@ -4,7 +4,10 @@ import unittest
 import tempfile
 
 class FlaskerTestCase(unittest.TestCase):
-
+    """
+    Testing class for Flaskr application. setUp and tearDown methods are executed for each test!
+    That means that for every single test, a temp database is created and subsequently destroyed!
+    """
     def setUp(self):
         db_fd = tempfile.mkstemp()
         self.db_fd, flaskr.app.config['DATABASE'] = db_fd
@@ -29,6 +32,9 @@ class FlaskerTestCase(unittest.TestCase):
         self.assertEquals(len(rows), 3)
 
     def test_write_entry(self):
+        """
+        Test the write_entry() method of flaskr.
+        """
         expected = ("My Title", "My Text")
         with self.app.test_request_context('/'):
             self.app.preprocess_request()
@@ -42,5 +48,22 @@ class FlaskerTestCase(unittest.TestCase):
         for val in expected:
             # Actually check the values against expected.
             self.assertTrue(val in rows[0])
+
+    def test_get_all_entries_empty(self):
+        with self.app.test_request_context('/'):
+            self.app.preprocess_request()
+            entries = flaskr.get_all_entries()
+            self.assertEquals(len(entries), 0)
+
+    def test_get_all_entries(self):
+        expected = ("My Title", "My Text")
+        with self.app.test_request_context('/'):
+            self.app.preprocess_request()
+            flaskr.write_entry(*expected)
+            entries = flaskr.get_all_entries()
+            self.assertEquals(len(entries), 1)
+            for entry in entries:
+                self.assertEquals(expected[0], entry['title'])
+                self.assertEquals(expected[1], entry['text'])
 if __name__ == '__main__':
     unittest.main()
