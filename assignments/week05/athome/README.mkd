@@ -1,0 +1,24 @@
+Week 05
+=======
+
+Live Link: http://block647055-hm6.blueboxgrid.com
+
+# Flaskr on Bluebox
+
+My objective was to walk through the tutorial on my local machine, and deploy flaskr to bluebox.
+
+I was able to do so with the following modification.
+
+*  I was receiving perm errors on the dbase. `chmod 777` on the entire directory where I am storing project databases
+   eventually did the trick. Looking at the apache2 process, however, I saw that apache was running as user, 'www-data'.
+   I assumed that a `chown` and `chgrp` to www-data would negate me having to change the file permissions,
+   but i was still having issues.
+
+Overall, this was a pretty interesting lab. I've been learning Django during this program, and there are a number of
+analogs both syntactically (e.g. Jinja2 vs. Django's templating language) as well as logically,
+(models, views, controllers).
+
+For me though, the most exciting take home were the tests. I can definitely see the benefit of writing tests for
+different functionality. I'd like to focus my final project for this class on providing my django application with
+good quality test-coverage.  If I could leave this course with a good understanding of applying unittest to Django,
+that would be awesome!
