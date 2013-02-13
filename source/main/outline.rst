@@ -437,6 +437,8 @@ Django ORM (and ORMs in general) can help shield Python developers from SQL.
 For our homework, we'll take a look at a set of specifications for a project
 and create a set of Django Models that will fulfill the specification.
 
+`Week 6 Presentation <presentations/week06.html>`_
+
 Reading
 *******
 
@@ -480,17 +482,24 @@ Reference
 Assignment
 **********
 
-To Be Decided
+Assignment
+**********
+
+You can read the assignment at 
+
+http://github.com/cewing/training.python_web/blob/master/assignments/week06/athome/assignment.txt
+
+Please complete the assignment by noon on Sunday, February 17, 2013.
 
 Week 7 - Django
 ---------------
 
 **Date**: Feb. 19, 2013
 
-In this class we'll dive a bit further into Django. We'll take the
-specifications from week 6 and the models we created from them to set up a
-simple application.  Along the way we'll learn a bit more about the Django
-admin, generic views, and templates.
+In this class we'll dive a bit further into Django. We'll take the app we 
+build for our week 6 homework and add style and security features.  Along the
+way we'll have a chance to learn more about Django's templates, models, views
+and forms.
 
 We'll also discuss extending the functionality of our application using
 existing Django **apps**. We'll see how these add-ons can help us to solve
