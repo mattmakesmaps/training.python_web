@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Entries</h2>
+    {% for entry in object_list %}
+        <hr>
+        <h3>{{ entry.title }}</h3>
+        <h4>{{ entry.publication_date }}</h4>
+        <h4>Author: {{ entry.author }}</h4>
+        <p>{{ entry.text }}</p>
+    {% endfor %}
+{% endblock %}

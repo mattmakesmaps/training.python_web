@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Entry Tool{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css" />
+    {% block extrahead %}{% endblock %}
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        {% block headerlinks %}
+            <a href="/">Entry List</a>
+            <a href="/add">Add Entry</a>
+            <a href="/accounts/login">Login</a>
+            <a href="/accounts/logout">Logout</a>
+            <a href="/admin">Admin</a>
+        {% endblock headerlinks %}
+    </div>
+    {% block content %}{% endblock content %}
+    <hr>
+    <footer>
+        {% block footer %}
+        <p>Some great example footer text.</p>
+        {% endblock footer %}
+    </footer>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery-1.7.1.min.js"><\/script>')</script>
+{% block extrascript %}{% endblock %}
+</body>
+</html>
