@@ -11,10 +11,17 @@
         {% block headerlinks %}
             <a href="/">Entry List</a>
             <a href="/add">Add Entry</a>
-            <a href="/accounts/login">Login</a>
-            <a href="/accounts/logout">Logout</a>
+            <a href="/login">Login</a>
+            <a href="/logout">Logout</a>
             <a href="/admin">Admin</a>
         {% endblock headerlinks %}
+{#    Print Username if Available#}
+    Currently Logged In As:
+        {% if user.username %}
+            {{ user.username }}
+    {% else %}
+    Not Logged In
+    {% endif %}
     </div>
     {% block content %}{% endblock content %}
     <hr>
