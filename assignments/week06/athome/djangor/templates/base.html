@@ -9,11 +9,19 @@
 <div class="container">
     <div class="header">
         {% block headerlinks %}
-            <a href="/">Entry List</a>
-            <a href="/add">Add Entry</a>
-            <a href="/login">Login</a>
-            <a href="/logout">Logout</a>
-            <a href="/admin">Admin</a>
+{#            Named Url Patterns don't need to be quoted. At least not when you aren't passing any additional template context#}
+{#            variables. This looks different from https://docs.djangoproject.com/en/dev/topics/http/urls/#naming-url-patterns#}
+            <a href="{% url entry_list %}">Entry List</a>
+            <a href="{% url entry_create %}">Add Entry</a>
+{#            Not sure if i need to be calling this view from django-registration or directly from django.contrib.auth#}
+            <a href="{% url django.contrib.auth.views.login %}">Login</a>
+            <a href="{% url django.contrib.auth.views.logout %}">Logout</a>
+{#            Another Named URL#}
+            <a href="{% url registration_register %}">Register</a>
+{#            What the hell is this colon for? Is that because there is a separate 'admin' app namespace?#}
+{#            No, it's probably some custom template tag wizardy#}
+{#            https://docs.djangoproject.com/en/dev/ref/contrib/admin/#reversing-admin-urls#}
+            <a href="{% url admin:index %}">Admin</a>
         {% endblock headerlinks %}
 {#    Print Username if Available#}
     Currently Logged In As:
