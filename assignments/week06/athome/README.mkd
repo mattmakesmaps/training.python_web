@@ -1,0 +1,23 @@
+Week 06, Djangor
+================
+
+This was my first experience working with class-based views.
+I can really see how the ability to inherit functionality from parent
+view classes can be really powerful. Also the ability to drop in mixins
+(for login required functionality, for example) seems really intuitive.
+
+While I'm sure that there are a million ways I could improve on this application,
+I feel like I have the most questions on URL reversing.
+
+In my base.html template: https://github.com/mattmakesmaps/training.python_web/blob/master/assignments/week06/athome/djangor/templates/base.html I'm trying to avoid hard-coding URLs for the various views we've got going on.
+I'm realizing that there are a million different ways to use the 'URL' template tag.
+
+I'm currently referencing URLs in the following ways:
+*  Using named url patterns explicitly set in my urls.py file: https://github.com/mattmakesmaps/training.python_web/blob/master/assignments/week06/athome/djangor/djangor/urls.py
+*  Using dot notation to drill back to the specific view name (in a specific app, e.g. django.contrib.admin).
+*  Using a colon, in the case of the admin application. Referencing the admin app source, I see that there are
+   a series of custom template tags. Is the use of the colon an example of calling that custom template tag
+   functionality?
+
+Anyways, I'm just curious what the best practices are around reversing URLs in templates? It seems like there are
+many different ways to do it, and I'm wondering which one is most recommended or commonplace?
